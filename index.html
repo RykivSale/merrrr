@@ -76,7 +76,7 @@
   /* Фото в арке и рисованные веточки вокруг */
   .frame {
     position: relative;
-    width: min(72%, 300px);
+    width: min(76%, 310px);
     display: flex;
     justify-content: center;
   }
@@ -98,15 +98,16 @@
     display: block;
     filter: sepia(.15) contrast(.98);
   }
-  /* Веточка по рисунку: одна крупная справа, одна поменьше слева снизу */
-  .sprig {
+  /* Тонкая лоза с цветами обвивает контур арки (рисуется tools/vine.py) */
+  .vine {
     position: absolute;
-    height: auto;
+    left: -15%;
+    top: -11.25%;
+    width: 130%;
+    height: 125%;
     max-width: none;
     pointer-events: none;
   }
-  .sprig-a { width: 58%; right: -38%; top: -8%; transform: rotate(8deg); }
-  .sprig-b { width: 34%; left: -24%; bottom: -8%; transform: scale(-1, -1) rotate(-10deg); }
 
   .names {
     margin: 0;
@@ -324,8 +325,7 @@
     <figure class="photo">
       <img src="img/anton-sonya.jpg" alt="Антон и Соня">
     </figure>
-    <img class="sprig sprig-a" src="img/sprig.png" alt="">
-    <img class="sprig sprig-b" src="img/sprig.png" alt="">
+    <img class="vine" src="img/vine.svg" alt="">
   </div>
 
   <h1 class="names">
