@@ -73,8 +73,15 @@
     margin: 0;
   }
 
+  /* Фото в арке и рисованные веточки вокруг */
+  .frame {
+    position: relative;
+    width: min(72%, 300px);
+    display: flex;
+    justify-content: center;
+  }
   .photo {
-    width: min(100%, 340px);
+    width: 100%;
     aspect-ratio: 3 / 4;
     max-width: 100%;
     border-radius: 999px 999px 4px 4px;
@@ -87,10 +94,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 30%;
+    object-position: 42% 38%;
     display: block;
     filter: sepia(.15) contrast(.98);
   }
+  .sprig {
+    position: absolute;
+    width: 34%;
+    height: auto;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Стили на самих symbol: в <use> наследуется оригинальное дерево */
+  .fl-stem { fill: none; stroke: var(--muted); stroke-width: 1.1; }
+  .fl-bloom { fill: none; stroke: var(--rose); stroke-width: 1.1; }
+  .fl-dot { fill: var(--rose); stroke: none; }
+  .sprig-a { left: -33%; top: 4%; transform: rotate(-8deg); }
+  .sprig-b { right: -33%; bottom: -4%; transform: scaleX(-1) rotate(-16deg); }
+  .sprig-c { left: -17%; bottom: -6%; width: 18%; transform: rotate(-40deg); }
+  .sprig-d { right: -13%; top: -3%; width: 16%; transform: scaleX(-1) rotate(-30deg); }
 
   .names {
     margin: 0;
@@ -304,9 +329,49 @@
 <main class="card">
   <p class="eyebrow">Приглашение на роспись</p>
 
-  <figure class="photo">
-    <img src="img/anton-sonya.jpg" alt="Антон и Соня">
-  </figure>
+  <div class="frame">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="sprig" viewBox="0 0 120 240">
+      <path class="fl-stem" d="M64 236 C58 196 72 162 60 124 S46 56 70 8"/>
+      <path class="fl-stem" d="M61 196 C44 190 30 176 26 158 C42 162 56 176 61 196 Z M61 196 C50 184 38 172 26 158"/>
+      <path class="fl-stem" d="M64 168 C80 160 92 144 94 126 C80 132 68 148 64 168 Z M64 168 C74 154 84 140 94 126"/>
+      <path class="fl-stem" d="M58 132 C42 124 32 108 32 92 C46 98 56 114 58 132 Z M58 132 C48 118 40 104 32 92"/>
+      <path class="fl-stem" d="M56 92 C70 84 80 70 82 56 C68 60 58 74 56 92 Z"/>
+      <path class="fl-stem" d="M62 60 C54 52 44 50 36 52"/>
+      <g class="fl-bloom" transform="translate(70 12)">
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(288)"/>
+        <circle class="fl-dot" r="2"/>
+      </g>
+      <g class="fl-bloom" transform="translate(32 50) rotate(20) scale(.72)">
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-8" rx="4.6" ry="8" transform="rotate(288)"/>
+        <circle class="fl-dot" r="2.4"/>
+      </g>
+      <path class="fl-bloom" d="M26 158 C20 150 22 140 28 136 C32 144 32 152 26 158 Z"/>
+      <path class="fl-bloom" d="M94 126 C98 116 106 112 112 114 C110 122 102 128 94 126 Z"/>
+    </symbol>
+    <symbol id="bud" viewBox="0 0 60 90">
+      <path class="fl-stem" d="M30 88 C28 64 36 44 30 22"/>
+      <path class="fl-stem" d="M31 62 C20 58 12 48 12 38 C22 42 30 52 31 62 Z"/>
+      <path class="fl-stem" d="M32 48 C42 44 48 34 48 26 C40 28 34 38 32 48 Z"/>
+      <path class="fl-bloom" d="M30 22 C22 16 22 6 30 2 C38 6 38 16 30 22 Z M30 22 C28 14 28 8 30 2"/>
+    </symbol>
+    </svg>
+    <figure class="photo">
+      <img src="img/anton-sonya.jpg" alt="Антон и Соня">
+    </figure>
+    <svg class="sprig sprig-a" viewBox="0 0 120 240" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="sprig sprig-b" viewBox="0 0 120 240" aria-hidden="true"><use href="#sprig"/></svg>
+    <svg class="sprig sprig-c" viewBox="0 0 60 90" aria-hidden="true"><use href="#bud"/></svg>
+    <svg class="sprig sprig-d" viewBox="0 0 60 90" aria-hidden="true"><use href="#bud"/></svg>
+  </div>
 
   <h1 class="names">
     <span>Антон</span>
