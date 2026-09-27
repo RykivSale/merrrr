@@ -303,6 +303,22 @@
     line-height: 1.1;
   }
 
+  /* ゴゴゴ в духе JoJo, перекрашенные в палитру приглашения */
+  .signoff {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 3vw, 18px);
+  }
+  .gogo {
+    width: clamp(46px, 13vw, 74px);
+    height: auto;
+    overflow: visible;
+  }
+  .gogo-l { align-self: start; }
+  .gogo-r { align-self: end; }
+
   @media (max-width: 420px) {
     body { font-size: 18px; }
     .details { grid-template-columns: 1fr; }
@@ -315,6 +331,9 @@
     .card > *:nth-child(3) { animation-delay: .16s; }
     .card > *:nth-child(n+4) { animation-delay: .24s; }
     @keyframes rise { from { transform: translateY(10px); } to { transform: none; } }
+    .gogo use { animation: menace 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .gogo use:nth-of-type(2) { animation-delay: -1.3s; }
+    @keyframes menace { 0%, 100% { transform: none; } 50% { transform: translate(1px, -2px) scale(1.04); } }
   }
 </style>
 
@@ -371,10 +390,33 @@
     <div><b id="c-m">—</b><small>минут</small></div>
   </div>
 
-  <p class="sign">
-    <span class="with">с любовью,</span>
-    <span class="who">Антон и Соня</span>
-  </p>
+  <div class="signoff">
+    <svg class="gogo gogo-l" viewBox="0 0 100 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="go-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4A3A30"/>
+          <stop offset="1" stop-color="#A57C69"/>
+        </linearGradient>
+        <symbol id="go" viewBox="0 0 100 100" overflow="visible">
+          <g transform="skewX(-18)" fill="url(#go-fill)" stroke="#34291F" stroke-width="2.6" stroke-linejoin="round">
+            <path d="M8 38 L12 24 L72 12 C83 10 90 17 88 28 L81 86 C80 94 73 99 64 99 L14 101 L9 80 L58 77 L62 42 L16 49 Z"/>
+            <path d="M74 -6 L87 -10 L96 14 L83 18 Z"/>
+            <path d="M93 -11 L106 -15 L115 9 L102 13 Z"/>
+          </g>
+        </symbol>
+      </defs>
+      <use href="#go" x="0" y="0" width="64" height="64"/>
+      <use href="#go" x="44" y="58" width="42" height="42"/>
+    </svg>
+    <p class="sign">
+      <span class="with">с любовью,</span>
+      <span class="who">Антон и Соня</span>
+    </p>
+    <svg class="gogo gogo-r" viewBox="0 0 100 120" aria-hidden="true">
+      <use href="#go" x="4" y="14" width="56" height="56"/>
+      <use href="#go" x="52" y="66" width="38" height="38"/>
+    </svg>
+  </div>
 </main>
 
 <script>
