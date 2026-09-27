@@ -327,7 +327,7 @@
     .details > div + div { border-left: 0; border-top: 1px solid var(--hair); }
   }
 
-  /* Экран загрузки: два лебедя, шеи складываются в сердце */
+  /* Экран загрузки: два обручальных кольца */
   body.is-loading { overflow: hidden; }
   .loader {
     position: fixed;
@@ -345,12 +345,7 @@
     transition: opacity .9s ease, visibility 0s linear .9s;
   }
   .loader.is-done { opacity: 0; visibility: hidden; }
-  .swans { width: min(64vw, 260px); height: auto; overflow: visible; }
-  .swans path, .swans .water { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
-  .swans .feather { stroke-width: .7; stroke: var(--muted); }
-  .swans .water { stroke: var(--hair); stroke-width: 1; }
-  .swans .eye { fill: var(--ink); stroke: none; }
-  .swans .heart-glow { fill: var(--rose); stroke: none; opacity: 0; }
+  .rings { width: min(62vw, 250px); height: auto; max-width: 100%; }
   .loader-names {
     margin: 0;
     font-family: var(--script);
@@ -427,16 +422,9 @@
   @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 14px; } }
 
   @media (prefers-reduced-motion: no-preference) {
-    .swans .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.4s cubic-bezier(.45,.1,.25,1) forwards; }
-    .swans .d2 { animation-delay: .5s; }
-    .swans .d3 { animation-delay: 1.1s; animation-duration: 1.6s; }
-    .swans .eye { opacity: 0; animation: appear .6s ease 1.8s forwards; }
-    .swans .heart-glow { animation: glow 3.2s ease-in-out 2.2s infinite; }
-    .swans .pair { animation: bob 4s ease-in-out infinite; transform-box: fill-box; }
-    @keyframes draw { to { stroke-dashoffset: 0; } }
-    @keyframes appear { to { opacity: 1; } }
-    @keyframes glow { 0%, 100% { opacity: 0; transform: scale(.8); } 50% { opacity: .16; transform: scale(1); } }
-    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    .rings { animation: ring-in 1.4s cubic-bezier(.2,.7,.2,1) both, float 4.5s ease-in-out 1.4s infinite; }
+    @keyframes ring-in { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+    @keyframes float { 0%, 100% { transform: none; } 50% { transform: translateY(-4px) rotate(-1deg); } }
     .card > * { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
     .card > *:nth-child(2) { animation-delay: .08s; }
     .card > *:nth-child(3) { animation-delay: .16s; }
@@ -449,26 +437,7 @@
 </style>
 
 <div class="loader" id="loader" role="dialog" aria-label="Приглашение загружается">
-  <svg class="swans" viewBox="0 0 200 170" aria-hidden="true">
-    <path class="heart-glow" d="M100 52 C92 30 64 26 56 48 C50 66 72 88 100 110 C128 88 150 66 144 48 C136 26 108 30 100 52 Z" style="transform-origin: 100px 70px"/>
-    <g class="pair">
-      <defs>
-        <g id="swan">
-          <path class="draw" pathLength="1" d="M88 121 C58 106 36 76 41 48 C46 24 72 17 86 29 C92 34 95 39 95 43"/>
-          <path class="draw d2" pathLength="1" d="M80 125 C46 110 24 78 30 46 C36 16 70 4 88 19 C94 24 97 32 97 39 L100 50 L94 44"/>
-          <path class="draw" pathLength="1" d="M88 121 C95 136 78 149 54 149 C32 149 15 139 6 117 C18 124 30 122 40 116 C54 108 68 112 80 125"/>
-          <path class="draw d3 feather" pathLength="1" d="M42 124 C54 118 70 122 82 134"/>
-          <path class="draw d3 feather" pathLength="1" d="M34 131 C48 127 62 131 72 140"/>
-          <path class="draw d3 feather" pathLength="1" d="M26 136 C38 134 50 137 58 144"/>
-          <circle class="eye" cx="90" cy="29" r="1.4"/>
-        </g>
-      </defs>
-      <use href="#swan"/>
-      <use href="#swan" transform="translate(200 0) scale(-1 1)"/>
-    </g>
-    <path class="water draw d3" pathLength="1" d="M4 158 Q40 153 70 158 T130 158 T196 158"/>
-    <path class="water draw d3" pathLength="1" d="M52 166 Q76 162 100 166 T148 166"/>
-  </svg>
+  <img class="rings" src="img/rings.png" alt="" width="1173" height="787">
   <p class="loader-names">Антон и Соня</p>
   <p class="eyebrow">14 · 11 · 2026</p>
   <div class="loader-bar" id="loader-bar"></div>
