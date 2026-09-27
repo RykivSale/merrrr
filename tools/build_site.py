@@ -1,5 +1,5 @@
 """Собирает сайт для Netlify в папку site/ (и site.zip в export/)."""
-import os, shutil, zipfile
+import os, re, shutil, subprocess, zipfile
 
 URL = "https://antonisonya.netlify.app"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,8 +27,23 @@ cut = page.index('<div class="loader"')
 html = head + page[:cut] + "</head>\n<body>\n" + page[cut:] + "\n</body>\n</html>\n"
 
 shutil.rmtree(SITE, ignore_errors=True)
-os.makedirs(os.path.join(SITE, "img"))
-os.makedirs(os.path.join(SITE, "audio"))
+for d in ("img", "audio", "fonts"):
+    os.makedirs(os.path.join(SITE, d))
+
+# Шрифты кладём рядом с сайтом, чтобы не зависеть от Google Fonts
+link = re.search(r'<link rel="stylesheet" href="(https://fonts.googleapis.com[^"]+)">', html)
+ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
+css = subprocess.run(["curl", "-sS", "-A", ua, link.group(1).replace("&amp;", "&")], capture_output=True, text=True, check=True).stdout
+faces = []
+for i, (subset, block) in enumerate(re.findall(r"/\* ([\w-]+) \*/\s*(@font-face \{.*?\})", css, re.S)):
+    if subset not in ("cyrillic", "latin"):
+        continue
+    url = re.search(r"url\((https://[^)]+)\)", block).group(1)
+    name = f"f{i}.woff2"
+    subprocess.run(["curl", "-sS", "-o", os.path.join(SITE, "fonts", name), url], check=True)
+    faces.append(block.replace(url, "fonts/" + name))
+html = re.sub(r'<link rel="preconnect"[^>]*>\s*', "", html)
+html = html.replace(link.group(0), "<style>\n" + "\n".join(faces) + "\n</style>")
 open(os.path.join(SITE, "index.html"), "w", encoding="utf-8").write(html)
 for f in ["img/anton-sonya.jpg", "img/vine.svg", "img/rings.png", "img/og.png", "img/favicon.svg", "audio/giorno-lofi.mp3"]:
     shutil.copy(os.path.join(ROOT, f), os.path.join(SITE, f))
