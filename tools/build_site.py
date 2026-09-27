@@ -1,7 +1,7 @@
 """Собирает сайт для Netlify в папку site/ (и site.zip в export/)."""
 import os, re, shutil, subprocess, zipfile
 
-URL = "https://antonisonya.netlify.app"
+URL = "https://sonya-anton.ru"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = os.path.join(ROOT, "site")
 
@@ -49,9 +49,9 @@ for f in ["img/anton-sonya.jpg", "img/vine.svg", "img/rings.png", "img/og.png", 
     shutil.copy(os.path.join(ROOT, f), os.path.join(SITE, f))
 
 os.makedirs(os.path.join(ROOT, "export"), exist_ok=True)
-with zipfile.ZipFile(os.path.join(ROOT, "export", "antonisonya-site.zip"), "w", zipfile.ZIP_DEFLATED) as z:
+with zipfile.ZipFile(os.path.join(ROOT, "export", "sonya-anton-site.zip"), "w", zipfile.ZIP_DEFLATED) as z:
     for dp, _, fs in os.walk(SITE):
         for f in fs:
             p = os.path.join(dp, f)
-            z.write(p, os.path.join("antonisonya", os.path.relpath(p, SITE)))
+            z.write(p, os.path.join("sonya-anton", os.path.relpath(p, SITE)))
 print("ok")
