@@ -221,7 +221,20 @@
     font-style: italic;
     color: var(--muted);
   }
-  .tbd { color: var(--muted); }
+  .map {
+    align-self: center;
+    margin-top: 4px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--rose);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+  .map:hover, .map:focus-visible { color: var(--ink); }
+  .map:focus-visible { outline: 1px solid var(--rose); outline-offset: 4px; }
 
   .note {
     margin: 0;
@@ -319,13 +332,14 @@
   <div class="details">
     <div>
       <span class="eyebrow">Время</span>
-      <span class="val tbd">—:—</span>
-      <span class="sub">сообщим позже</span>
+      <span class="val">15:00</span>
+      <span class="sub">суббота, 14 ноября</span>
     </div>
     <div>
       <span class="eyebrow">Место</span>
-      <span class="val tbd">ЗАГС</span>
-      <span class="sub">адрес пришлём отдельно</span>
+      <span class="val">ЗАГС</span>
+      <span class="sub">Университетский пер., 48/2А, Ростов-на-Дону</span>
+      <a class="map" href="https://yandex.ru/maps/?text=%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2-%D0%BD%D0%B0-%D0%94%D0%BE%D0%BD%D1%83%2C%20%D0%A3%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%82%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D0%B9%20%D0%BF%D0%B5%D1%80%D0%B5%D1%83%D0%BB%D0%BE%D0%BA%2C%2048%2F2%D0%90" target="_blank" rel="noopener">Открыть в картах</a>
     </div>
   </div>
 
@@ -358,9 +372,9 @@
     cal.innerHTML = html;
   })();
 
-  // Обратный отсчёт до 14.11.2026 (время уточним, пока считаем до полудня)
+  // Обратный отсчёт до 14.11.2026, 15:00
   (function () {
-    var target = new Date(2026, 10, 14, 12, 0, 0).getTime();
+    var target = new Date(2026, 10, 14, 15, 0, 0).getTime();
     var dEl = document.getElementById("c-d"),
         hEl = document.getElementById("c-h"),
         mEl = document.getElementById("c-m");
