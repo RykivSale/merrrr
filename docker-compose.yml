@@ -1,0 +1,25 @@
+# Запуск на сервере: docker compose up -d --build
+# Caddy сам получает и продлевает HTTPS-сертификат для sonya-anton.ru.
+services:
+  web:
+    image: caddy:2
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site:/srv:ro
+      - caddy_data:/data
+    depends_on:
+      - rsvp
+  rsvp:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.rsvp
+    restart: always
+    volumes:
+      - rsvp_data:/data
+volumes:
+  caddy_data:
+  rsvp_data:
