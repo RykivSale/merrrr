@@ -15,10 +15,14 @@ ROOT="/var/www/$DOMAIN"
 
 [ -z "$ZIP" ] || [ -f "$ZIP" ] || { echo "Не найден архив $ZIP"; exit 1; }
 
-echo "==> Ставлю nginx, git, unzip и certbot"
 export DEBIAN_FRONTEND=noninteractive
-apt-get update -qq
-apt-get install -y -qq nginx git unzip curl certbot python3-certbot-nginx >/dev/null
+# apt на слабом VPS очень медленный — ставим пакеты только если чего-то не хватает
+if ! command -v nginx >/dev/null || ! command -v git >/dev/null || ! command -v unzip >/dev/null \
+   || ! command -v certbot >/dev/null || ! command -v python3 >/dev/null; then
+    echo "==> Ставлю nginx, git, unzip и certbot"
+    apt-get update -qq
+    apt-get install -y -qq nginx git unzip curl certbot python3-certbot-nginx python3 >/dev/null
+fi
 
 echo "==> Раскладываю сайт в $ROOT"
 TMP="$(mktemp -d)"
@@ -48,7 +52,6 @@ chown -R www-data:www-data /var/lib/sonya-anton
 rm -rf "$TMP"
 
 echo "==> Настраиваю сервис опроса (ответы в /var/lib/sonya-anton/rsvp.json)"
-apt-get install -y -qq python3 >/dev/null
 cat > /etc/systemd/system/sonya-rsvp.service <<EOF
 [Unit]
 Description=Sonya and Anton RSVP
