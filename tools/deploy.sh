@@ -92,6 +92,10 @@ EOF
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
+# nginx сам поднимается после падения и перезагрузки сервера
+mkdir -p /etc/systemd/system/nginx.service.d
+printf '[Service]\nRestart=always\nRestartSec=3\n' > /etc/systemd/system/nginx.service.d/restart.conf
+systemctl daemon-reload
 systemctl enable --now nginx >/dev/null
 systemctl reload nginx
 
