@@ -1,24 +1,42 @@
 #!/usr/bin/env bash
 # Разворачивает приглашение на VPS (Ubuntu/Debian) под доменом sonya-anton.ru.
-# Запуск: bash deploy.sh [путь к архиву]   (по умолчанию /root/sonya-anton-site.zip)
-# Повторный запуск с новым архивом обновляет сайт.
+# Запуск без аргументов берёт сайт из git (клонирует или обновляет репозиторий):
+#   curl -fsSL https://raw.githubusercontent.com/RykivSale/merrrr/claude/nice-hawking-d7bq5h/tools/deploy.sh | bash
+# Или из архива: bash deploy.sh /root/sonya-anton-site.zip
+# Повторный запуск обновляет сайт.
 set -euo pipefail
 
 DOMAIN="sonya-anton.ru"
-ZIP="${1:-/root/sonya-anton-site.zip}"
+REPO_URL="https://github.com/RykivSale/merrrr.git"
+BRANCH="claude/nice-hawking-d7bq5h"
+REPO="/opt/sonya-anton/repo"
+ZIP="${1:-}"
 ROOT="/var/www/$DOMAIN"
 
-[ -f "$ZIP" ] || { echo "Не найден архив $ZIP — загрузите sonya-anton-site.zip в /root"; exit 1; }
+[ -z "$ZIP" ] || [ -f "$ZIP" ] || { echo "Не найден архив $ZIP"; exit 1; }
 
-echo "==> Ставлю nginx, unzip и certbot"
+echo "==> Ставлю nginx, git, unzip и certbot"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq nginx unzip certbot python3-certbot-nginx >/dev/null
+apt-get install -y -qq nginx git unzip curl certbot python3-certbot-nginx >/dev/null
 
 echo "==> Раскладываю сайт в $ROOT"
 TMP="$(mktemp -d)"
-unzip -q "$ZIP" -d "$TMP"
-SRC="$(dirname "$(find "$TMP" -name index.html | head -n1)")"
+if [ -n "$ZIP" ]; then
+    unzip -q "$ZIP" -d "$TMP"
+    SRC="$(dirname "$(find "$TMP" -name index.html | head -n1)")"
+else
+    if [ -d "$REPO/.git" ]; then
+        git -C "$REPO" fetch -q origin "$BRANCH"
+        git -C "$REPO" reset -q --hard "origin/$BRANCH"
+    else
+        mkdir -p "$(dirname "$REPO")"
+        git clone -q --depth 1 -b "$BRANCH" "$REPO_URL" "$REPO"
+    fi
+    echo "    коммит $(git -C "$REPO" log -1 --format='%h %s')"
+    SRC="$REPO/site"
+    cp "$REPO/tools/rsvp_server.py" "$TMP"/
+fi
 mkdir -p "$ROOT"
 rm -rf "${ROOT:?}"/*
 cp -r "$SRC"/. "$ROOT"/
