@@ -14,7 +14,7 @@ head = f"""<!doctype html>
 <meta name="theme-color" content="#EDE6DA">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{URL}/">
-<meta property="og:title" content="Соня и Антон вам кое-куда хотят пригласить...">
+<meta property="og:title" content="Соня и Антон вас кое-куда хотят пригласить...">
 <meta property="og:image" content="{URL}/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="1200">
