@@ -54,4 +54,6 @@ with zipfile.ZipFile(os.path.join(ROOT, "export", "sonya-anton-site.zip"), "w", 
         for f in fs:
             p = os.path.join(dp, f)
             z.write(p, os.path.join("sonya-anton", os.path.relpath(p, SITE)))
+    # Сервер опроса едет в архиве рядом с сайтом, но не попадает в публичную папку
+    z.write(os.path.join(ROOT, "tools", "rsvp_server.py"), "sonya-anton-server/rsvp_server.py")
 print("ok")

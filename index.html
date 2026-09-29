@@ -262,6 +262,54 @@
     text-wrap: pretty;
   }
 
+  /* Опрос: придёте ли */
+  .rsvp {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .rsvp label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rsvp input {
+    width: 100%;
+    font: inherit;
+    font-size: 20px;
+    text-align: center;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--hair);
+    border-radius: 0;
+    padding: 8px 4px;
+  }
+  .rsvp input::placeholder { color: var(--hair); }
+  .rsvp input:focus { outline: 0; border-bottom-color: var(--ink); }
+  .rsvp button {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: background .3s ease, color .3s ease, opacity .3s ease;
+  }
+  .rsvp button:hover, .rsvp button:focus-visible { background: var(--ink); color: var(--paper); }
+  .rsvp button:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+  .rsvp button:disabled { opacity: .5; pointer-events: none; }
+  .rsvp-msg { margin: 0; min-height: 1.55em; font-style: italic; font-size: 18px; color: var(--rose); }
+  .rsvp.is-saved input, .rsvp.is-saved button, .rsvp.is-saved label { display: none; }
+  .rsvp.is-saved .rsvp-msg { font-style: normal; font-family: var(--display); font-size: 24px; color: var(--ink); }
+
   .count {
     display: flex;
     gap: clamp(18px, 6vw, 36px);
@@ -497,6 +545,13 @@
 
   <p class="note">Роспись будет камерной, только самые близкие. Пожалуйста, скажите нам, получится ли у вас прийти.</p>
 
+  <form class="rsvp" id="rsvp" autocomplete="off">
+    <label for="rsvp-name">Фамилия и имя</label>
+    <input id="rsvp-name" name="name" type="text" maxlength="100" placeholder="Иванов Иван" autocomplete="name" required>
+    <button type="submit">Приду</button>
+    <p class="rsvp-msg" id="rsvp-msg" role="status" aria-live="polite"></p>
+  </form>
+
   <div class="count" id="count" aria-label="До росписи осталось">
     <div><b id="c-d">—</b><small>дней</small></div>
     <div><b id="c-h">—</b><small>часов</small></div>
@@ -563,6 +618,33 @@
     tick();
     setInterval(tick, 30000);
   })();
+  // Опрос: отправляем ответ на сервер, он кладёт его в rsvp.json
+  (function () {
+    var form = document.getElementById("rsvp"),
+        input = document.getElementById("rsvp-name"),
+        msg = document.getElementById("rsvp-msg"),
+        btn = form.querySelector("button");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = input.value.trim().replace(/\s+/g, " ");
+      if (!name) { msg.textContent = "Напишите фамилию и имя"; input.focus(); return; }
+      btn.disabled = true;
+      msg.textContent = "";
+      fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        form.classList.add("is-saved");
+        msg.textContent = "Сохранено";
+      }).catch(function () {
+        btn.disabled = false;
+        msg.textContent = "Не получилось сохранить, попробуйте ещё раз";
+      });
+    });
+  })();
+
   // Загрузка: ждём фото, шрифты и начало трека, потом даём открыть
   (function () {
     var loader = document.getElementById("loader"),

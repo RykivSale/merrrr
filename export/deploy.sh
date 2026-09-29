@@ -23,7 +23,30 @@ mkdir -p "$ROOT"
 rm -rf "${ROOT:?}"/*
 cp -r "$SRC"/. "$ROOT"/
 chown -R www-data:www-data "$ROOT"
+SRV="$(find "$TMP" -name rsvp_server.py | head -n1)"
+mkdir -p /opt/sonya-anton /var/lib/sonya-anton
+cp "$SRV" /opt/sonya-anton/rsvp_server.py
+chown -R www-data:www-data /var/lib/sonya-anton
 rm -rf "$TMP"
+
+echo "==> Настраиваю сервис опроса (ответы в /var/lib/sonya-anton/rsvp.json)"
+apt-get install -y -qq python3 >/dev/null
+cat > /etc/systemd/system/sonya-rsvp.service <<EOF
+[Unit]
+Description=Sonya and Anton RSVP
+After=network.target
+
+[Service]
+User=www-data
+ExecStart=/usr/bin/python3 /opt/sonya-anton/rsvp_server.py 8787 /var/lib/sonya-anton/rsvp.json
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable sonya-rsvp >/dev/null
+systemctl restart sonya-rsvp
 
 echo "==> Настраиваю nginx"
 cat > "/etc/nginx/sites-available/$DOMAIN" <<EOF
@@ -34,6 +57,11 @@ server {
     root $ROOT;
     index index.html;
 
+    location /api/ {
+        proxy_pass http://127.0.0.1:8787;
+        proxy_set_header X-Real-IP \$remote_addr;
+        client_max_body_size 4k;
+    }
     location / {
         try_files \$uri \$uri/ =404;
     }
