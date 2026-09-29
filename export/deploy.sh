@@ -67,6 +67,10 @@ systemctl enable sonya-rsvp >/dev/null
 systemctl restart sonya-rsvp
 
 echo "==> Настраиваю nginx"
+# Если certbot уже прописал HTTPS, конфиг не трогаем — иначе повторный деплой его сотрёт
+if grep -qs "managed by Certbot" "/etc/nginx/sites-available/$DOMAIN"; then
+    echo "    HTTPS-конфиг certbot уже есть, оставляю как есть"
+else
 cat > "/etc/nginx/sites-available/$DOMAIN" <<EOF
 server {
     listen 80;
@@ -89,6 +93,7 @@ server {
     }
 }
 EOF
+fi
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
