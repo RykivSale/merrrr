@@ -11,16 +11,14 @@ head = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Антон и Соня приглашают на роспись 14 ноября 2026 года в 15:00, Ростов-на-Дону.">
 <meta name="theme-color" content="#EDE6DA">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{URL}/">
-<meta property="og:title" content="Антон и Соня · 14.11.2026">
-<meta property="og:description" content="Приглашение на роспись. Суббота, 14 ноября, 15:00, Ростов-на-Дону.">
-<meta property="og:image" content="{URL}/img/og.png">
+<meta property="og:title" content="Соня и Антон вам кое-куда хотят пригласить...">
+<meta property="og:image" content="{URL}/img/og.jpg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
+<meta property="og:image:height" content="1200">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 """
 cut = page.index('<div class="loader"')
@@ -45,7 +43,7 @@ for i, (subset, block) in enumerate(re.findall(r"/\* ([\w-]+) \*/\s*(@font-face 
 html = re.sub(r'<link rel="preconnect"[^>]*>\s*', "", html)
 html = html.replace(link.group(0), "<style>\n" + "\n".join(faces) + "\n</style>")
 open(os.path.join(SITE, "index.html"), "w", encoding="utf-8").write(html)
-for f in ["img/anton-sonya.jpg", "img/vine.svg", "img/rings.png", "img/og.png", "img/favicon.svg", "audio/giorno-lofi.mp3"]:
+for f in ["img/anton-sonya.jpg", "img/vine.svg", "img/rings.png", "img/og.jpg", "img/favicon.svg", "audio/giorno-lofi.mp3"]:
     shutil.copy(os.path.join(ROOT, f), os.path.join(SITE, f))
 
 os.makedirs(os.path.join(ROOT, "export"), exist_ok=True)
